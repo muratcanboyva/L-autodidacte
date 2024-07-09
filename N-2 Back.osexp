@@ -1,0 +1,346 @@
+---
+API: 3
+OpenSesame: 4.0.27
+Platform: posix
+---
+set width 1352
+set title "New experiment"
+set subject_parity even
+set subject_nr 0
+set start NBACK
+set sound_sample_size -16
+set sound_freq 48000
+set sound_channels 2
+set sound_buf_size 1024
+set sampler_backend osweb
+set round_decimals 2
+set mouse_backend osweb
+set keyboard_backend osweb
+set jatos_uuid "537a5c9f-3dbc-87e6-24de-74bed9b0bf38"
+set height 964
+set fullscreen no
+set form_clicks no
+set foreground white
+set font_underline no
+set font_size 18
+set font_italic False
+set font_family mono
+set font_bold False
+set experiment_path "/Users/muratcan/Desktop"
+set disable_garbage_collection False
+set description "The main experiment item"
+set color_backend osweb
+set clock_backend osweb
+set canvas_backend osweb
+set background "#3d3846"
+
+define inline_javascript Correct_counter
+	set description "Executes Python code"
+	___run__
+	var response = vars.response; // obtain the correct response and assign it
+	
+	if (response === 'm' && correct_response === 'm') {
+	    correct_responses++; // If response is correct, increases the correct counter
+	} else if (response !== correct_response) {
+	    incorrect_responses++; // If response is incorrect, increases the incorrect counter
+	}
+	total_trials ++ // Increases the total number of trials
+	__end__
+	set _prepare ""
+
+define inline_javascript Counters
+	set description "Executes Python code"
+	___run__
+	var correct_responses = "0" // Correct response counter
+	var total_trials = "0" // Total trial counter 
+	var incorrect_responses ="0" //incorrect response counter
+	var target_counts = {A: 0, C: 0, D: 0, E: 0, G: 0, J: 0, L: 0, N: 0}; // Keeps the number of times each letter is used as a target
+	var used_targets = []; // List to hold letters used as targets
+	__end__
+	set _prepare ""
+
+define inline_javascript Experiment_Array
+	set description "Executes Python code"
+	___run__
+	// Stimuli Preperation
+	letters = ["B", "F", "K", "H", "M", "Q", "R", "X"] // Letters to be used in the experiment block
+	letter_history = []; // The list that'll keep the letter history
+	__end__
+	set _prepare ""
+
+define loop Experiment_Loop
+	set source_file ""
+	set source table
+	set repeat 1
+	set order random
+	set description "Repeatedly runs another item"
+	set cycles 48
+	set continuous no
+	set break_if_on_first yes
+	set break_if False
+	setcycle 0 target 1
+	setcycle 1 target 1
+	setcycle 2 target 1
+	setcycle 3 target 1
+	setcycle 4 target 1
+	setcycle 5 target 1
+	setcycle 6 target 1
+	setcycle 7 target 1
+	setcycle 8 target 0
+	setcycle 9 target 0
+	setcycle 10 target 0
+	setcycle 11 target 0
+	setcycle 12 target 0
+	setcycle 13 target 0
+	setcycle 14 target 0
+	setcycle 15 target 0
+	setcycle 16 target 0
+	setcycle 17 target 0
+	setcycle 18 target 0
+	setcycle 19 target 0
+	setcycle 20 target 0
+	setcycle 21 target 0
+	setcycle 22 target 0
+	setcycle 23 target 0
+	setcycle 24 target 0
+	setcycle 25 target 0
+	setcycle 26 target 0
+	setcycle 27 target 0
+	setcycle 28 target 0
+	setcycle 29 target 0
+	setcycle 30 target 0
+	setcycle 31 target 0
+	setcycle 32 target 0
+	setcycle 33 target 0
+	setcycle 34 target 0
+	setcycle 35 target 0
+	setcycle 36 target 0
+	setcycle 37 target 0
+	setcycle 38 target 0
+	setcycle 39 target 0
+	setcycle 40 target 0
+	setcycle 41 target 0
+	setcycle 42 target 0
+	setcycle 43 target 0
+	setcycle 44 target 0
+	setcycle 45 target 0
+	setcycle 46 target 0
+	setcycle 47 target 0
+	run Trial_sequence
+
+define feedback Experiment_feedback
+	set reset_variables yes
+	set duration keypress
+	set description "Provides feedback to the participant"
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=23 html=yes show_if=True text="{feedback_text}" x=0 y=-64 z_index=0
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=True text="You have completed the experiment<br />Thank you for participating! " x=0 y=64 z_index=0
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=22 html=yes show_if=True text="Your average reaction time was:[average_response_time]ms" x=0 y=0 z_index=0
+
+define inline_javascript Feedback_item
+	set description "Executes Python code"
+	___run__
+	// Item that includes relevant variables and presents feedback text
+	
+	var feedback_text = "Your total correct response in this block is: " + correct_responses + " out of " + total_trials + "."
+	vars.feedback_text = feedback_text;
+	__end__
+	set _prepare ""
+
+define sequence NBACK
+	set flush_keyboard yes
+	set description "Runs a number of items in sequence"
+	run Opening True
+	run Welcome True
+	run Practice_array True
+	run Counters True
+	run Practice_loop True
+	run practice_feedback True
+	run end_of_practice True
+	run Experiment_Array True
+	run Reset_Counter True
+	run Experiment_Loop True
+	run Experiment_feedback True
+	run explog True
+
+define sketchpad Opening
+	set start_response_interval no
+	set reset_variables no
+	set duration keypress
+	set description "Displays stimuli"
+	draw textline center=1 color=white font_bold=no font_family=serif font_italic=no font_size=32 html=yes show_if=True text="OpenSesame 4.0 <i>Melodramatic Milgram</i><br />Test battery v1.0 <i>Asylum for the Feelings</i><br />" x=0 y=-32 z_index=0
+
+define inline_javascript Practice_array
+	set description "Executes Python code"
+	___run__
+	// Stimuli Preperation
+	letters = ["A", "C", "D", "E", "G", "J", "L", "N"] // Letters to be used in the practice block
+	letter_history = []; // The list that'll keep the letter history
+	__end__
+	set _prepare ""
+
+define loop Practice_loop
+	set source_file ""
+	set source table
+	set repeat 1
+	set order random
+	set description "Repeatedly runs another item"
+	set cycles 24
+	set continuous no
+	set break_if_on_first yes
+	set break_if False
+	setcycle 0 target 1
+	setcycle 1 target 1
+	setcycle 2 target 1
+	setcycle 3 target 1
+	setcycle 4 target 0
+	setcycle 5 target 0
+	setcycle 6 target 0
+	setcycle 7 target 0
+	setcycle 8 target 0
+	setcycle 9 target 0
+	setcycle 10 target 0
+	setcycle 11 target 0
+	setcycle 12 target 0
+	setcycle 13 target 0
+	setcycle 14 target 0
+	setcycle 15 target 0
+	setcycle 16 target 0
+	setcycle 17 target 0
+	setcycle 18 target 0
+	setcycle 19 target 0
+	setcycle 20 target 0
+	setcycle 21 target 0
+	setcycle 22 target 0
+	setcycle 23 target 0
+	run Trial_sequence
+
+define inline_javascript Randomizer
+	set description "Executes Python code"
+	set _run ""
+	___prepare__
+	// Check if target condition is met and there are at least 2 previous letters in history
+	if (target === 1 && letter_history.length >= 2) {
+	    // Get the letter from 2 positions back in the history
+	    current_letter = letter_history[letter_history.length - 2];
+	    // Check if the letter has already been used as a target
+	    if (target_counts[current_letter] !== 0) {
+	        // Pick a new letter that hasn't been used as a target yet
+	        do {
+	            current_letter = random.pick(letters); // Randomly pick a letter from the letters array
+	        } while (target_counts[current_letter] !== 0); // Repeat if the picked letter is already used as a target
+	    }
+	
+	    // Set the correct response for the target condition
+	    correct_response = 'm';
+	
+	    // Increment the count of times this letter has been used as a target
+	    target_counts[current_letter] += 1;
+	
+	    // Add the current letter to the used targets list
+	    used_targets.push(current_letter);
+	} else {
+	    // If it's not a target or there aren't enough letters in history
+	    target = 0;
+	    correct_response = "None"; // Set the correct response for the non-target condition
+	
+	    // Randomly pick a non-target letter ensuring it's not same as 2 positions back
+	    do {
+	        current_letter = random.pick(letters); // Randomly pick a letter from the letters array
+	    } while (letter_history.length >= 2 && current_letter === letter_history[letter_history.length - 2]); // Repeat if picked letter is same as letter 2 positions back
+	}
+	
+	// Add the current letter to the letter history
+	letter_history.push(current_letter);
+	__end__
+
+define inline_javascript Reset_Counter
+	set description "Executes Python code"
+	___run__
+	//  This item resets the counter before the experimental loop begins. 
+	
+	var correct_responses = "0" // Correct response counter
+	var total_trials = "0" // total trial counter 
+	var incorrect_responses ="0" //incorrect response counter
+	var target_counts = {B: 0, F: 0, K: 0, H: 0, M: 0, Q: 0, R: 0, X: 0}; // Keeps the number of times each letter is used as a target
+	var used_targets = []; // List to hold letters used as targets
+	__end__
+	set _prepare ""
+
+define sequence Trial_sequence
+	set flush_keyboard yes
+	set description "Runs a number of items in sequence"
+	run Randomizer True
+	run fixation True
+	run stimuli_presentation True
+	run white_fixdot True
+	run key_response True
+	run Correct_counter True
+	run green_fixdot "correct == 1 and target == 1"
+	run red_fixdot "correct == 0"
+	run Feedback_item True
+
+define sketchpad Welcome
+	set duration keypress
+	set description "Displays stimuli"
+	draw textline center=1 color=white font_bold=no font_family=sans font_italic=no font_size=22 html=yes show_if=True text="Welcome to our Experiment<br /><br />When you begin the experiment, you will see a sequence of letters. <br /><br />Your task is to decide whether the letter you see matches the one shown two steps before it.<br /><br /> If the letters match, press the m key on your keyboard. If they do not match, do not respond.<br /><br />Please press any key to start the experiment<br />" x=0 y=0 z_index=0
+
+define feedback end_of_practice
+	set reset_variables yes
+	set duration keypress
+	set description "Provides feedback to the participant"
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if=True text="You have completed the practice. Now you can continue with the experiment. <br /><br />Please press any key to continue <br />" x=0 y=0 z_index=0
+
+define logger explog
+	set description "Logs experimental data"
+	set auto_log yes
+
+define sketchpad fixation
+	set duration 500
+	set description "Displays stimuli"
+	draw line color="#edfff8" penwidth=1 show_if=True x1=0 x2=0 y1=-96 y2=0 z_index=0
+	draw line color="#fffbff" penwidth=1 show_if=True x1=0 x2=0 y1=0 y2=96 z_index=0
+	draw line color="#eef3ff" penwidth=1 show_if=True x1=-96 x2=96 y1=0 y2=0 z_index=0
+
+define sketchpad green_fixdot
+	set duration 500
+	set description "Displays stimuli"
+	draw line color=green penwidth=2 show_if=True x1=0 x2=0 y1=-96 y2=0 z_index=0
+	draw line color=green penwidth=2 show_if=True x1=0 x2=0 y1=0 y2=96 z_index=0
+	draw line color=green penwidth=2 show_if=True x1=-96 x2=96 y1=0 y2=0 z_index=0
+
+define keyboard_response key_response
+	set timeout 2000
+	set flush yes
+	set event_type keypress
+	set duration keypress
+	set description "Collects keyboard responses"
+	set allowed_keys "[if vars.requires_response == 'yes' then 'm' else '']"
+
+define feedback practice_feedback
+	set reset_variables yes
+	set duration keypress
+	set description "Provides feedback to the participant"
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if=True text="Your average reaction time was:[average_response_time]ms" x=32 y=-64 z_index=0
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if=True text="" x=32 y=0 z_index=0
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if=True text="" x=32 y=-32 z_index=0
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=18 html=yes show_if=True text=" {feedback_text}<br />" x=32 y=-128 z_index=0
+
+define sketchpad red_fixdot
+	set duration 500
+	set description "Displays stimuli"
+	draw line color="#ff0003" penwidth=2 show_if=True x1=0 x2=0 y1=-96 y2=0 z_index=0
+	draw line color="#ff0003" penwidth=2 show_if=True x1=0 x2=0 y1=0 y2=96 z_index=0
+	draw line color="#ff0003" penwidth=2 show_if=True x1=-96 x2=96 y1=0 y2=0 z_index=0
+
+define sketchpad stimuli_presentation
+	set duration 500
+	set description "Displays stimuli"
+	draw textline center=1 color=white font_bold=no font_family=sans font_italic=no font_size=52 html=yes show_if=True text="{current_letter}" x=3 y=-10 z_index=0
+
+define sketchpad white_fixdot
+	set duration -1
+	set description "Displays stimuli"
+	draw line color="#edfff8" penwidth=1 show_if=True x1=0 x2=0 y1=-96 y2=0 z_index=0
+	draw line color="#fffbff" penwidth=1 show_if=True x1=0 x2=0 y1=0 y2=96 z_index=0
+	draw line color="#eef3ff" penwidth=1 show_if=True x1=-96 x2=96 y1=0 y2=0 z_index=0
+
